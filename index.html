@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Запись на маникюр</title>
+  <title>Wex Beauty — Запись</title>
   <script src="https://telegram.org/js/telegram-web-app.js"></script>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
   <style>
@@ -16,600 +16,243 @@
       --charcoal: #2c2018;
       --soft-black: #1a1208;
       --gold: #c4a35a;
-      --light-gold: #e8d5a3;
-      --glass: rgba(253,246,238,0.85);
-      --shadow: 0 8px 40px rgba(160,94,80,0.15);
+      --glass: rgba(253,246,238,0.88);
+      --card-bg: white;
+      --input-bg: white;
+      --border: rgba(242,212,200,0.8);
+      --shadow: 0 8px 40px rgba(160,94,80,0.13);
+      --nav-inactive: white;
+      --nav-inactive-text: #8b6b70;
+      --body-text: #2c2018;
+      --sub-text: #8b6b70;
+      --slot-bg: white;
+      --slot-border: #f2d4c8;
+      --price-border: rgba(242,212,200,0.6);
     }
-
+    [data-theme="dark"] {
+      --cream: #1a1410;
+      --blush: #3a2820;
+      --rose: #d4907f;
+      --deep-rose: #c07060;
+      --mauve: #b09098;
+      --charcoal: #f0e8e0;
+      --soft-black: #faf4ee;
+      --gold: #d4b06a;
+      --glass: rgba(30,22,16,0.92);
+      --card-bg: #251c16;
+      --input-bg: #2e221a;
+      --border: rgba(80,50,40,0.8);
+      --shadow: 0 8px 40px rgba(0,0,0,0.4);
+      --nav-inactive: #2e221a;
+      --nav-inactive-text: #b09098;
+      --body-text: #f0e8e0;
+      --sub-text: #b09098;
+      --slot-bg: #2e221a;
+      --slot-border: #3a2820;
+      --price-border: rgba(80,50,40,0.5);
+    }
     * { box-sizing: border-box; margin: 0; padding: 0; }
-
     body {
       background: var(--cream);
       font-family: 'Montserrat', sans-serif;
-      color: var(--charcoal);
+      color: var(--body-text);
       min-height: 100vh;
       overflow-x: hidden;
+      transition: background 0.3s, color 0.3s;
     }
-
-    /* Фоновая текстура */
     body::before {
       content: '';
       position: fixed;
       inset: 0;
-      background:
-        radial-gradient(ellipse at 20% 10%, rgba(242,212,200,0.6) 0%, transparent 50%),
-        radial-gradient(ellipse at 80% 90%, rgba(196,163,90,0.15) 0%, transparent 50%),
-        radial-gradient(ellipse at 60% 40%, rgba(201,137,122,0.1) 0%, transparent 40%);
+      background: radial-gradient(ellipse at 20% 10%, rgba(242,212,200,0.4) 0%, transparent 50%),
+                  radial-gradient(ellipse at 80% 90%, rgba(196,163,90,0.1) 0%, transparent 50%);
       pointer-events: none;
       z-index: 0;
     }
-
-    .app {
-      position: relative;
-      z-index: 1;
-      max-width: 420px;
-      margin: 0 auto;
-      padding: 0 0 80px;
+    [data-theme="dark"] body::before {
+      background: radial-gradient(ellipse at 20% 10%, rgba(80,40,30,0.4) 0%, transparent 50%),
+                  radial-gradient(ellipse at 80% 90%, rgba(100,70,20,0.15) 0%, transparent 50%);
     }
+    .app { position: relative; z-index: 1; max-width: 420px; margin: 0 auto; padding: 0 0 90px; }
 
-    /* Хедер */
-    .header {
-      padding: 32px 24px 24px;
-      text-align: center;
-      position: relative;
-    }
-
-    .header-ornament {
-      font-size: 11px;
-      letter-spacing: 6px;
-      color: var(--gold);
-      text-transform: uppercase;
-      margin-bottom: 8px;
-      font-weight: 500;
-    }
-
-    .header h1 {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 36px;
-      font-weight: 300;
-      color: var(--soft-black);
-      line-height: 1.1;
-      margin-bottom: 4px;
-    }
-
-    .header h1 em {
-      font-style: italic;
-      color: var(--rose);
-    }
-
-    .header-sub {
-      font-size: 12px;
-      color: var(--mauve);
-      letter-spacing: 2px;
-      text-transform: uppercase;
-    }
-
-    .divider {
+    /* Топ-панель */
+    .topbar {
       display: flex;
+      justify-content: flex-end;
       align-items: center;
-      gap: 12px;
-      margin: 0 24px 24px;
-    }
-
-    .divider-line {
-      flex: 1;
-      height: 1px;
-      background: linear-gradient(to right, transparent, var(--blush), transparent);
-    }
-
-    .divider-ornament {
-      color: var(--gold);
-      font-size: 16px;
-    }
-
-    /* Навигация */
-    .nav {
-      display: flex;
       gap: 8px;
-      padding: 0 24px;
-      margin-bottom: 24px;
+      padding: 14px 20px 0;
     }
-
-    .nav-btn {
-      flex: 1;
-      padding: 10px 6px;
-      border: none;
-      border-radius: 12px;
+    .lang-toggle { display: flex; background: var(--blush); border-radius: 10px; overflow: hidden; }
+    .lang-btn {
+      padding: 5px 11px;
       font-family: 'Montserrat', sans-serif;
       font-size: 11px;
-      font-weight: 500;
-      letter-spacing: 0.5px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      text-transform: uppercase;
-    }
-
-    .nav-btn.active {
-      background: var(--rose);
-      color: white;
-      box-shadow: 0 4px 16px rgba(201,137,122,0.4);
-    }
-
-    .nav-btn:not(.active) {
-      background: white;
-      color: var(--mauve);
-      border: 1px solid var(--blush);
-    }
-
-    /* Секции */
-    .section {
-      display: none;
-      padding: 0 24px;
-      animation: fadeIn 0.3s ease;
-    }
-
-    .section.active { display: block; }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(8px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    /* Карточки */
-    .card {
-      background: var(--glass);
-      backdrop-filter: blur(20px);
-      border: 1px solid rgba(242,212,200,0.8);
-      border-radius: 20px;
-      padding: 20px;
-      margin-bottom: 16px;
-      box-shadow: var(--shadow);
-    }
-
-    .card-title {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 22px;
-      font-weight: 400;
-      color: var(--soft-black);
-      margin-bottom: 16px;
-    }
-
-    /* Календарь */
-    .calendar-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 16px;
-    }
-
-    .calendar-month {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 20px;
-      font-weight: 400;
-      color: var(--soft-black);
-    }
-
-    .cal-nav {
-      width: 36px;
-      height: 36px;
-      border: 1px solid var(--blush);
-      background: white;
-      border-radius: 10px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 18px;
-      color: var(--rose);
-      transition: all 0.2s;
-    }
-
-    .cal-nav:hover {
-      background: var(--rose);
-      color: white;
-      border-color: var(--rose);
-    }
-
-    .calendar-grid {
-      display: grid;
-      grid-template-columns: repeat(7, 1fr);
-      gap: 4px;
-    }
-
-    .cal-day-name {
-      text-align: center;
-      font-size: 11px;
       font-weight: 600;
-      color: var(--mauve);
-      letter-spacing: 0.5px;
-      padding: 6px 0;
-      text-transform: uppercase;
-    }
-
-    .cal-day {
-      aspect-ratio: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 10px;
-      font-size: 13px;
-      font-weight: 500;
+      border: none;
+      background: transparent;
+      color: var(--sub-text);
       cursor: pointer;
+      letter-spacing: 0.5px;
       transition: all 0.2s;
+    }
+    .lang-btn.active { background: var(--rose); color: white; border-radius: 8px; }
+    .theme-icon { font-size: 14px; }
+    .theme-toggle {
+      width: 40px; height: 22px;
+      background: var(--blush);
+      border-radius: 11px;
+      border: none;
+      cursor: pointer;
       position: relative;
+      transition: background 0.3s;
     }
-
-    .cal-day.empty { cursor: default; }
-    .cal-day.past { color: #ccc; cursor: default; }
-    .cal-day.available {
-      background: rgba(201,137,122,0.1);
-      color: var(--rose);
-      border: 1px solid rgba(201,137,122,0.3);
-    }
-    .cal-day.available:hover, .cal-day.available.selected {
-      background: var(--rose);
-      color: white;
-      border-color: var(--rose);
-      box-shadow: 0 4px 12px rgba(201,137,122,0.4);
-      transform: scale(1.1);
-    }
-    .cal-day.unavailable { color: #bbb; cursor: default; }
-
-    .cal-day.today {
-      font-weight: 700;
-    }
-
-    .cal-day.available::after {
+    .theme-toggle::after {
       content: '';
       position: absolute;
-      bottom: 3px;
-      width: 4px;
-      height: 4px;
-      background: var(--gold);
-      border-radius: 50%;
-    }
-
-    .cal-day.available.selected::after { background: white; }
-
-    /* Слоты времени */
-    .slots-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 8px;
-      margin-top: 16px;
-    }
-
-    .slot-btn {
-      padding: 12px 8px;
-      border: 1.5px solid var(--blush);
-      background: white;
-      border-radius: 12px;
-      font-family: 'Montserrat', sans-serif;
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--charcoal);
-      cursor: pointer;
-      transition: all 0.2s;
-      text-align: center;
-    }
-
-    .slot-btn:hover, .slot-btn.selected {
+      top: 3px; left: 3px;
+      width: 16px; height: 16px;
       background: var(--rose);
-      border-color: var(--rose);
-      color: white;
-      box-shadow: 0 4px 12px rgba(201,137,122,0.35);
-      transform: translateY(-2px);
+      border-radius: 50%;
+      transition: transform 0.3s;
     }
+    [data-theme="dark"] .theme-toggle::after { transform: translateX(18px); background: var(--gold); }
 
-    .slot-btn.booked {
-      background: #f5f5f5;
-      color: #bbb;
-      border-color: #eee;
-      cursor: not-allowed;
-      text-decoration: line-through;
+    /* Хедер */
+    .header { padding: 16px 24px 18px; text-align: center; }
+    .header-ornament { font-size: 10px; letter-spacing: 6px; color: var(--gold); text-transform: uppercase; margin-bottom: 6px; font-weight: 500; }
+    .header h1 { font-family: 'Cormorant Garamond', serif; font-size: 34px; font-weight: 300; color: var(--soft-black); line-height: 1.1; margin-bottom: 3px; }
+    .header h1 em { font-style: italic; color: var(--rose); }
+    .header-sub { font-size: 11px; color: var(--sub-text); letter-spacing: 2px; text-transform: uppercase; }
+    .divider { display: flex; align-items: center; gap: 12px; margin: 0 24px 18px; }
+    .divider-line { flex: 1; height: 1px; background: linear-gradient(to right, transparent, var(--blush), transparent); }
+    .divider-ornament { color: var(--gold); font-size: 14px; }
+
+    /* Навигация */
+    .nav { display: flex; gap: 6px; padding: 0 20px; margin-bottom: 18px; }
+    .nav-btn {
+      flex: 1; padding: 9px 4px;
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 10px; font-weight: 600;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      transition: all 0.25s;
+      text-transform: uppercase;
+      background: var(--nav-inactive);
+      color: var(--nav-inactive-text);
     }
+    .nav-btn.active { background: var(--rose); color: white; border-color: var(--rose); box-shadow: 0 4px 14px rgba(201,137,122,0.35); }
+
+    /* Секции */
+    .section { display: none; padding: 0 20px; animation: fadeIn 0.3s ease; }
+    .section.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+    /* Карточки */
+    .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 18px; padding: 18px; margin-bottom: 14px; box-shadow: var(--shadow); transition: background 0.3s, border 0.3s; }
+    .card-title { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 400; color: var(--soft-black); margin-bottom: 14px; }
+
+    /* Календарь */
+    .calendar-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+    .calendar-month { font-family: 'Cormorant Garamond', serif; font-size: 19px; color: var(--soft-black); }
+    .cal-nav { width: 34px; height: 34px; border: 1px solid var(--border); background: var(--slot-bg); border-radius: 9px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 18px; color: var(--rose); transition: all 0.2s; }
+    .cal-nav:hover { background: var(--rose); color: white; border-color: var(--rose); }
+    .calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; }
+    .cal-day-name { text-align: center; font-size: 10px; font-weight: 600; color: var(--sub-text); letter-spacing: 0.3px; padding: 5px 0; text-transform: uppercase; }
+    .cal-day { aspect-ratio: 1; display: flex; align-items: center; justify-content: center; border-radius: 9px; font-size: 12px; font-weight: 500; cursor: pointer; transition: all 0.2s; position: relative; color: var(--body-text); }
+    .cal-day.empty { cursor: default; }
+    .cal-day.past { color: var(--border); cursor: default; }
+    .cal-day.available { background: rgba(201,137,122,0.1); color: var(--rose); border: 1px solid rgba(201,137,122,0.25); }
+    .cal-day.available:hover, .cal-day.available.selected { background: var(--rose); color: white; border-color: var(--rose); box-shadow: 0 3px 10px rgba(201,137,122,0.4); transform: scale(1.08); }
+    .cal-day.unavailable { color: var(--sub-text); cursor: default; opacity: 0.4; }
+    .cal-day.available::after { content: ''; position: absolute; bottom: 2px; width: 3px; height: 3px; background: var(--gold); border-radius: 50%; }
+    .cal-day.available.selected::after { background: rgba(255,255,255,0.7); }
+
+    /* Слоты */
+    .slots-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; margin-top: 12px; }
+    .slot-btn { padding: 11px 6px; border: 1.5px solid var(--slot-border); background: var(--slot-bg); border-radius: 11px; font-family: 'Montserrat', sans-serif; font-size: 13px; font-weight: 600; color: var(--body-text); cursor: pointer; transition: all 0.2s; text-align: center; }
+    .slot-btn:hover, .slot-btn.selected { background: var(--rose); border-color: var(--rose); color: white; box-shadow: 0 3px 10px rgba(201,137,122,0.35); transform: translateY(-1px); }
 
     /* Форма */
-    .form-group {
-      margin-bottom: 16px;
-    }
-
-    .form-label {
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      color: var(--mauve);
-      margin-bottom: 6px;
-      display: block;
-    }
-
-    .form-input {
-      width: 100%;
-      padding: 14px 16px;
-      border: 1.5px solid var(--blush);
-      border-radius: 14px;
-      font-family: 'Montserrat', sans-serif;
-      font-size: 14px;
-      color: var(--charcoal);
-      background: white;
-      outline: none;
-      transition: all 0.2s;
-    }
-
-    .form-input:focus {
-      border-color: var(--rose);
-      box-shadow: 0 0 0 3px rgba(201,137,122,0.1);
-    }
+    .form-group { margin-bottom: 12px; }
+    .form-label { font-size: 10px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: var(--sub-text); margin-bottom: 5px; display: block; }
+    .form-input { width: 100%; padding: 13px 15px; border: 1.5px solid var(--slot-border); border-radius: 12px; font-family: 'Montserrat', sans-serif; font-size: 14px; color: var(--body-text); background: var(--input-bg); outline: none; transition: all 0.2s; }
+    .form-input:focus { border-color: var(--rose); box-shadow: 0 0 0 3px rgba(201,137,122,0.1); }
 
     /* Кнопки */
-    .btn-primary {
-      width: 100%;
-      padding: 16px;
-      background: linear-gradient(135deg, var(--rose), var(--deep-rose));
-      border: none;
-      border-radius: 14px;
-      font-family: 'Montserrat', sans-serif;
-      font-size: 13px;
-      font-weight: 600;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      color: white;
-      cursor: pointer;
-      transition: all 0.3s;
-      box-shadow: 0 6px 24px rgba(160,94,80,0.35);
-      margin-top: 8px;
-    }
-
-    .btn-primary:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 32px rgba(160,94,80,0.45);
-    }
-
+    .btn-primary { width: 100%; padding: 15px; background: linear-gradient(135deg, var(--rose), var(--deep-rose)); border: none; border-radius: 13px; font-family: 'Montserrat', sans-serif; font-size: 12px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; color: white; cursor: pointer; transition: all 0.3s; box-shadow: 0 5px 20px rgba(160,94,80,0.3); margin-top: 6px; }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(160,94,80,0.4); }
     .btn-primary:active { transform: translateY(0); }
-
-    .btn-primary:disabled {
-      background: #ddd;
-      box-shadow: none;
-      cursor: not-allowed;
-      transform: none;
-    }
+    .btn-primary:disabled { background: var(--blush); box-shadow: none; cursor: not-allowed; transform: none; color: var(--sub-text); }
+    .btn-back { width: 100%; margin-top: 8px; padding: 12px; border: 1.5px solid var(--border); background: transparent; border-radius: 13px; color: var(--sub-text); font-family: 'Montserrat', sans-serif; font-size: 12px; font-weight: 500; cursor: pointer; transition: all 0.2s; }
+    .btn-back:hover { border-color: var(--rose); color: var(--rose); }
 
     /* Прайс */
-    .price-item {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 16px 0;
-      border-bottom: 1px solid rgba(242,212,200,0.6);
-    }
-
+    .price-item { display: flex; align-items: center; justify-content: space-between; padding: 14px 0; border-bottom: 1px solid var(--price-border); }
     .price-item:last-child { border-bottom: none; }
-
-    .price-name {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 18px;
-      color: var(--soft-black);
-    }
-
-    .price-name-sub {
-      font-size: 11px;
-      color: var(--mauve);
-      font-family: 'Montserrat', sans-serif;
-      margin-top: 2px;
-    }
-
-    .price-value {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 22px;
-      font-weight: 600;
-      color: var(--rose);
-    }
+    .price-name { font-family: 'Cormorant Garamond', serif; font-size: 17px; color: var(--soft-black); }
+    .price-name-sub { font-size: 11px; color: var(--sub-text); margin-top: 2px; }
+    .price-value { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 600; color: var(--rose); }
 
     /* Портфолио */
-    .portfolio-btn {
-      display: block;
-      width: 100%;
-      padding: 18px;
-      background: linear-gradient(135deg, var(--gold), #b8923a);
-      border: none;
-      border-radius: 16px;
-      font-family: 'Montserrat', sans-serif;
-      font-size: 13px;
-      font-weight: 600;
-      letter-spacing: 1.5px;
-      text-transform: uppercase;
-      color: white;
-      cursor: pointer;
-      text-decoration: none;
-      text-align: center;
-      box-shadow: 0 6px 24px rgba(196,163,90,0.4);
-      transition: all 0.3s;
-      margin-top: 16px;
-    }
-
-    .portfolio-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 10px 32px rgba(196,163,90,0.5);
-    }
+    .portfolio-btn { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; padding: 16px; background: linear-gradient(135deg, #2AABEE, #1a8dc9); border: none; border-radius: 14px; font-family: 'Montserrat', sans-serif; font-size: 12px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: white; text-decoration: none; text-align: center; cursor: pointer; box-shadow: 0 5px 20px rgba(42,171,238,0.3); transition: all 0.3s; margin-top: 14px; }
+    .portfolio-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(42,171,238,0.4); }
+    .portfolio-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 4px; }
+    .portfolio-cell { border-radius: 12px; aspect-ratio: 1; display: flex; align-items: center; justify-content: center; font-size: 26px; }
 
     /* Подтверждение */
-    .confirm-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 10px 0;
-      border-bottom: 1px solid rgba(242,212,200,0.5);
-    }
+    .confirm-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--price-border); }
     .confirm-row:last-of-type { border-bottom: none; }
-    .confirm-label {
-      font-size: 11px;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      color: var(--mauve);
-    }
-    .confirm-value {
-      font-size: 14px;
-      font-weight: 600;
-      color: var(--soft-black);
-    }
+    .confirm-label { font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: var(--sub-text); }
+    .confirm-value { font-size: 13px; font-weight: 600; color: var(--soft-black); }
 
     /* Успех */
-    .success-icon {
-      text-align: center;
-      font-size: 56px;
-      margin-bottom: 12px;
-    }
+    .success-icon { text-align: center; font-size: 52px; margin-bottom: 10px; }
+    .success-title { font-family: 'Cormorant Garamond', serif; font-size: 26px; text-align: center; color: var(--soft-black); margin-bottom: 8px; }
+    .success-sub { text-align: center; font-size: 13px; color: var(--sub-text); line-height: 1.6; }
 
-    .success-title {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 28px;
-      text-align: center;
-      color: var(--soft-black);
-      margin-bottom: 8px;
-    }
-
-    .success-sub {
-      text-align: center;
-      font-size: 13px;
-      color: var(--mauve);
-      line-height: 1.6;
-    }
-
-    /* Шаг-индикатор */
-    .steps {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      margin-bottom: 20px;
-    }
-
-    .step-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: var(--blush);
-      transition: all 0.3s;
-    }
-
-    .step-dot.active {
-      background: var(--rose);
-      width: 24px;
-      border-radius: 4px;
-    }
-
-    .step-dot.done {
-      background: var(--gold);
-    }
-
-    /* Пустое состояние */
-    .empty-state {
-      text-align: center;
-      padding: 32px 16px;
-      color: var(--mauve);
-    }
-
-    .empty-icon { font-size: 40px; margin-bottom: 12px; }
-
-    .empty-text {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 20px;
-      margin-bottom: 6px;
-      color: var(--charcoal);
-    }
-
-    /* Toast уведомление */
-    .toast {
-      position: fixed;
-      top: 20px;
-      left: 50%;
-      transform: translateX(-50%) translateY(-100px);
-      background: var(--soft-black);
-      color: white;
-      padding: 12px 24px;
-      border-radius: 24px;
-      font-size: 13px;
-      font-weight: 500;
-      z-index: 999;
-      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-      white-space: nowrap;
-    }
-
-    .toast.show { transform: translateX(-50%) translateY(0); }
-
-    /* Анимация лепестков */
-    .petal {
-      position: fixed;
-      font-size: 20px;
-      pointer-events: none;
-      animation: falling 3s ease-in forwards;
-      z-index: 100;
-    }
-
-    @keyframes falling {
-      0% { transform: translateY(-20px) rotate(0deg); opacity: 1; }
-      100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
-    }
+    /* Шаги */
+    .steps { display: flex; align-items: center; justify-content: center; gap: 5px; margin-bottom: 16px; }
+    .step-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--blush); transition: all 0.3s; }
+    .step-dot.active { background: var(--rose); width: 22px; border-radius: 4px; }
+    .step-dot.done { background: var(--gold); }
 
     /* Подписка */
-    .sub-warning {
-      background: linear-gradient(135deg, rgba(242,212,200,0.8), rgba(253,246,238,0.9));
-      border: 1.5px solid var(--blush);
-      border-radius: 16px;
-      padding: 20px;
-      text-align: center;
-      margin-bottom: 16px;
-    }
+    .sub-warning { background: var(--card-bg); border: 1.5px solid var(--blush); border-radius: 16px; padding: 20px; text-align: center; margin-bottom: 14px; }
+    .sub-warning-icon { font-size: 34px; margin-bottom: 8px; }
+    .sub-warning-title { font-family: 'Cormorant Garamond', serif; font-size: 20px; color: var(--soft-black); margin-bottom: 5px; }
+    .sub-warning-text { font-size: 12px; color: var(--sub-text); line-height: 1.5; }
+    .btn-subscribe { display: block; width: 100%; padding: 14px; background: linear-gradient(135deg, #2AABEE, #1a8dc9); border: none; border-radius: 13px; font-family: 'Montserrat', sans-serif; font-size: 12px; font-weight: 600; letter-spacing: 1px; text-transform: uppercase; color: white; text-decoration: none; text-align: center; cursor: pointer; box-shadow: 0 5px 18px rgba(42,171,238,0.3); transition: all 0.3s; margin-top: 12px; }
 
-    .sub-warning-icon { font-size: 36px; margin-bottom: 10px; }
-    .sub-warning-title {
-      font-family: 'Cormorant Garamond', serif;
-      font-size: 20px;
-      color: var(--soft-black);
-      margin-bottom: 6px;
-    }
-    .sub-warning-text { font-size: 12px; color: var(--mauve); line-height: 1.5; }
+    /* Toast */
+    .toast { position: fixed; top: 18px; left: 50%; transform: translateX(-50%) translateY(-80px); background: var(--soft-black); color: var(--cream); padding: 11px 22px; border-radius: 22px; font-size: 12px; font-weight: 500; z-index: 999; transition: transform 0.35s cubic-bezier(0.34,1.56,0.64,1); white-space: nowrap; }
+    .toast.show { transform: translateX(-50%) translateY(0); }
 
-    .btn-subscribe {
-      display: block;
-      width: 100%;
-      padding: 14px;
-      background: linear-gradient(135deg, #2AABEE, #1a8dc9);
-      border: none;
-      border-radius: 14px;
-      font-family: 'Montserrat', sans-serif;
-      font-size: 13px;
-      font-weight: 600;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      color: white;
-      text-decoration: none;
-      text-align: center;
-      cursor: pointer;
-      box-shadow: 0 6px 20px rgba(42,171,238,0.35);
-      transition: all 0.3s;
-      margin-top: 12px;
-    }
-
-    .btn-subscribe:hover { transform: translateY(-2px); }
-
-    /* Мобильная адаптация */
-    @media (max-width: 380px) {
-      .header h1 { font-size: 30px; }
-      .slots-grid { grid-template-columns: repeat(3, 1fr); gap: 6px; }
-      .slot-btn { font-size: 12px; padding: 10px 4px; }
-    }
+    .petal { position: fixed; pointer-events: none; animation: falling 3s ease-in forwards; z-index: 100; }
+    @keyframes falling { 0% { transform: translateY(-20px) rotate(0deg); opacity: 1; } 100% { transform: translateY(100vh) rotate(720deg); opacity: 0; } }
   </style>
 </head>
 <body>
-
 <div class="app">
+
+  <!-- Топ-панель -->
+  <div class="topbar">
+    <div class="lang-toggle">
+      <button class="lang-btn active" onclick="setLang('ru')">RU</button>
+      <button class="lang-btn" onclick="setLang('en')">EN</button>
+    </div>
+    <span class="theme-icon">☀️</span>
+    <button class="theme-toggle" onclick="toggleTheme()"></button>
+    <span class="theme-icon">🌙</span>
+  </div>
+
   <!-- Хедер -->
   <div class="header">
     <div class="header-ornament">✦ Nail Studio ✦</div>
-    <h1>Crystal <em>Nails</em></h1>
-    <div class="header-sub">Запись онлайн</div>
+    <h1>Wex <em>Beauty</em></h1>
+    <div class="header-sub" data-i="subtitle">Запись онлайн</div>
   </div>
 
   <div class="divider">
@@ -620,34 +263,27 @@
 
   <!-- Навигация -->
   <div class="nav">
-    <button class="nav-btn active" onclick="switchTab('booking')">Записаться</button>
-    <button class="nav-btn" onclick="switchTab('prices')">Прайсы</button>
-    <button class="nav-btn" onclick="switchTab('portfolio')">Портфолио</button>
+    <button class="nav-btn active" onclick="switchTab('booking',this)" data-i="nav_book">Записаться</button>
+    <button class="nav-btn" onclick="switchTab('prices',this)" data-i="nav_prices">Прайсы</button>
+    <button class="nav-btn" onclick="switchTab('portfolio',this)" data-i="nav_port">Портфолио</button>
   </div>
 
   <!-- ЗАПИСЬ -->
   <div class="section active" id="section-booking">
 
-    <!-- Проверка подписки -->
     <div id="sub-check" style="display:none">
       <div class="sub-warning">
         <div class="sub-warning-icon">📢</div>
-        <div class="sub-warning-title">Требуется подписка</div>
-        <div class="sub-warning-text">Для записи необходимо подписаться на наш канал</div>
-        <a class="btn-subscribe" href="https://t.me/yourchannel" target="_blank">Подписаться на канал</a>
+        <div class="sub-warning-title" data-i="sub_title">Требуется подписка</div>
+        <div class="sub-warning-text" data-i="sub_text">Для записи необходимо подписаться на канал</div>
+        <a class="btn-subscribe" href="https://t.me/wexbeauty" target="_blank" data-i="sub_btn">Подписаться</a>
       </div>
-      <button class="btn-primary" onclick="checkSubscription()">✓ Проверить подписку</button>
+      <button class="btn-primary" onclick="checkSub()" data-i="sub_check">✓ Проверить подписку</button>
     </div>
 
-    <!-- Шаг 1: Выбор даты -->
+    <!-- Шаг 1 -->
     <div id="step-date">
-      <div class="steps">
-        <div class="step-dot active" id="dot-1"></div>
-        <div class="step-dot" id="dot-2"></div>
-        <div class="step-dot" id="dot-3"></div>
-        <div class="step-dot" id="dot-4"></div>
-      </div>
-
+      <div class="steps"><div class="step-dot active"></div><div class="step-dot"></div><div class="step-dot"></div><div class="step-dot"></div></div>
       <div class="card">
         <div class="calendar-header">
           <button class="cal-nav" onclick="prevMonth()">‹</button>
@@ -656,464 +292,409 @@
         </div>
         <div class="calendar-grid" id="calendar"></div>
       </div>
-
-      <p style="text-align:center;font-size:12px;color:var(--mauve);margin-top:-8px">
-        ✅ — доступные дни для записи
-      </p>
+      <p style="text-align:center;font-size:11px;color:var(--sub-text);margin-top:-6px" data-i="cal_hint">✅ — доступные дни</p>
     </div>
 
-    <!-- Шаг 2: Выбор времени -->
+    <!-- Шаг 2 -->
     <div id="step-time" style="display:none">
-      <div class="steps">
-        <div class="step-dot done" id="dot-1b"></div>
-        <div class="step-dot active" id="dot-2b"></div>
-        <div class="step-dot" id="dot-3b"></div>
-        <div class="step-dot" id="dot-4b"></div>
-      </div>
+      <div class="steps"><div class="step-dot done"></div><div class="step-dot active"></div><div class="step-dot"></div><div class="step-dot"></div></div>
       <div class="card">
-        <div class="card-title">Выберите время</div>
-        <p style="font-size:12px;color:var(--mauve)" id="selected-date-label"></p>
+        <div class="card-title" data-i="choose_time">Выберите время</div>
+        <p style="font-size:11px;color:var(--sub-text)" id="date-label"></p>
         <div class="slots-grid" id="slots-grid"></div>
       </div>
-      <button class="btn-primary" id="btn-to-form" onclick="goToForm()" disabled>
-        Продолжить →
-      </button>
-      <button onclick="goBack('step-date','step-time')" style="width:100%;margin-top:10px;padding:12px;border:1.5px solid var(--blush);background:transparent;border-radius:14px;color:var(--mauve);font-family:Montserrat,sans-serif;font-size:13px;cursor:pointer;">
-        ← Назад
-      </button>
+      <button class="btn-primary" id="btn-form" onclick="goToForm()" disabled data-i="btn_continue">Продолжить →</button>
+      <button class="btn-back" onclick="goBack('step-date','step-time')" data-i="btn_back">← Назад</button>
     </div>
 
-    <!-- Шаг 3: Форма -->
+    <!-- Шаг 3 -->
     <div id="step-form" style="display:none">
-      <div class="steps">
-        <div class="step-dot done"></div>
-        <div class="step-dot done"></div>
-        <div class="step-dot active"></div>
-        <div class="step-dot"></div>
-      </div>
+      <div class="steps"><div class="step-dot done"></div><div class="step-dot done"></div><div class="step-dot active"></div><div class="step-dot"></div></div>
       <div class="card">
-        <div class="card-title">Ваши данные</div>
+        <div class="card-title" data-i="your_data">Ваши данные</div>
         <div class="form-group">
-          <label class="form-label">Имя</label>
-          <input type="text" class="form-input" id="input-name" placeholder="Ваше имя" autocomplete="name" />
+          <label class="form-label" data-i="lbl_name">Имя</label>
+          <input type="text" class="form-input" id="inp-name" placeholder="Ваше имя" autocomplete="name"/>
         </div>
         <div class="form-group">
-          <label class="form-label">Телефон</label>
-          <input type="tel" class="form-input" id="input-phone" placeholder="+7 999 123-45-67" autocomplete="tel" />
+          <label class="form-label" data-i="lbl_phone">Телефон</label>
+          <input type="tel" class="form-input" id="inp-phone" placeholder="+7 999 123-45-67" autocomplete="tel"/>
         </div>
       </div>
-      <button class="btn-primary" onclick="goToConfirm()">Продолжить →</button>
-      <button onclick="goBack('step-time','step-form')" style="width:100%;margin-top:10px;padding:12px;border:1.5px solid var(--blush);background:transparent;border-radius:14px;color:var(--mauve);font-family:Montserrat,sans-serif;font-size:13px;cursor:pointer;">
-        ← Назад
-      </button>
+      <button class="btn-primary" onclick="goToConfirm()" data-i="btn_continue">Продолжить →</button>
+      <button class="btn-back" onclick="goBack('step-time','step-form')" data-i="btn_back">← Назад</button>
     </div>
 
-    <!-- Шаг 4: Подтверждение -->
+    <!-- Шаг 4 -->
     <div id="step-confirm" style="display:none">
-      <div class="steps">
-        <div class="step-dot done"></div>
-        <div class="step-dot done"></div>
-        <div class="step-dot done"></div>
-        <div class="step-dot active"></div>
-      </div>
+      <div class="steps"><div class="step-dot done"></div><div class="step-dot done"></div><div class="step-dot done"></div><div class="step-dot active"></div></div>
       <div class="card">
-        <div class="card-title">Проверьте данные</div>
-        <div class="confirm-row">
-          <span class="confirm-label">📅 Дата</span>
-          <span class="confirm-value" id="conf-date"></span>
-        </div>
-        <div class="confirm-row">
-          <span class="confirm-label">🕐 Время</span>
-          <span class="confirm-value" id="conf-time"></span>
-        </div>
-        <div class="confirm-row">
-          <span class="confirm-label">👤 Имя</span>
-          <span class="confirm-value" id="conf-name"></span>
-        </div>
-        <div class="confirm-row">
-          <span class="confirm-label">📱 Телефон</span>
-          <span class="confirm-value" id="conf-phone"></span>
-        </div>
+        <div class="card-title" data-i="check_data">Проверьте данные</div>
+        <div class="confirm-row"><span class="confirm-label" data-i="c_date">📅 Дата</span><span class="confirm-value" id="c-date"></span></div>
+        <div class="confirm-row"><span class="confirm-label" data-i="c_time">🕐 Время</span><span class="confirm-value" id="c-time"></span></div>
+        <div class="confirm-row"><span class="confirm-label" data-i="c_name">👤 Имя</span><span class="confirm-value" id="c-name"></span></div>
+        <div class="confirm-row"><span class="confirm-label" data-i="c_phone">📱 Телефон</span><span class="confirm-value" id="c-phone"></span></div>
       </div>
-      <button class="btn-primary" onclick="submitBooking()">✓ Подтвердить запись</button>
-      <button onclick="goBack('step-form','step-confirm')" style="width:100%;margin-top:10px;padding:12px;border:1.5px solid var(--blush);background:transparent;border-radius:14px;color:var(--mauve);font-family:Montserrat,sans-serif;font-size:13px;cursor:pointer;">
-        ← Назад
-      </button>
+      <button class="btn-primary" onclick="submitBooking()" data-i="btn_confirm">✓ Подтвердить запись</button>
+      <button class="btn-back" onclick="goBack('step-form','step-confirm')" data-i="btn_back">← Назад</button>
     </div>
 
     <!-- Успех -->
     <div id="step-success" style="display:none">
-      <div class="card" style="text-align:center;padding:32px 20px">
+      <div class="card" style="text-align:center;padding:28px 18px">
         <div class="success-icon">💅</div>
-        <div class="success-title">Запись создана!</div>
+        <div class="success-title" data-i="success_title">Запись создана!</div>
         <div class="success-sub" id="success-text"></div>
-        <button class="btn-primary" style="margin-top:20px" onclick="resetBooking()">
-          ← В главное меню
-        </button>
+        <button class="btn-primary" style="margin-top:18px" onclick="reset()" data-i="btn_menu">← Главное меню</button>
       </div>
     </div>
-
   </div>
 
   <!-- ПРАЙСЫ -->
   <div class="section" id="section-prices">
     <div class="card">
-      <div class="card-title" style="margin-bottom:4px">Прайс-лист</div>
-      <p style="font-size:12px;color:var(--mauve);margin-bottom:16px">Актуальные цены на услуги</p>
-
+      <div class="card-title" data-i="price_title">Прайс-лист</div>
+      <p style="font-size:11px;color:var(--sub-text);margin-bottom:14px" data-i="price_sub">Актуальные цены</p>
       <div class="price-item">
         <div>
-          <div class="price-name">Французский маникюр</div>
-          <div class="price-name-sub">Френч • гель-лак</div>
+          <div class="price-name" data-i="s1">Французский маникюр</div>
+          <div class="price-name-sub" data-i="s1s">Френч • гель-лак</div>
         </div>
         <div class="price-value">1 000 ₽</div>
       </div>
-
       <div class="price-item">
         <div>
-          <div class="price-name">Квадрат</div>
-          <div class="price-name-sub">Классическая форма</div>
+          <div class="price-name" data-i="s2">Квадрат</div>
+          <div class="price-name-sub" data-i="s2s">Классическая форма</div>
         </div>
         <div class="price-value">500 ₽</div>
       </div>
     </div>
-
-    <div style="text-align:center;padding:12px 0;font-size:12px;color:var(--mauve)">
-      ❀ По всем вопросам — пишите в бот
-    </div>
+    <p style="text-align:center;font-size:11px;color:var(--sub-text)" data-i="price_note">❀ По вопросам — пишите в бот</p>
   </div>
 
   <!-- ПОРТФОЛИО -->
   <div class="section" id="section-portfolio">
     <div class="card">
-      <div class="card-title">Мои работы</div>
-      <p style="font-size:13px;color:var(--mauve);line-height:1.6;margin-bottom:16px">
-        Посмотрите примеры моих работ в Pinterest. Здесь собраны реальные фотографии готовых маникюров.
+      <div class="card-title" data-i="port_title">Мои работы</div>
+      <p style="font-size:12px;color:var(--sub-text);line-height:1.6;margin-bottom:14px" data-i="port_text">
+        Реальные работы в Telegram-канале @wexbeauty
       </p>
-
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px">
-        <div style="background:linear-gradient(135deg,#f2d4c8,#e8c0b0);border-radius:12px;aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:28px">💅</div>
-        <div style="background:linear-gradient(135deg,#e8d5a3,#d4b87a);border-radius:12px;aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:28px">✨</div>
-        <div style="background:linear-gradient(135deg,#d4e8d5,#a8c9ab);border-radius:12px;aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:28px">🌸</div>
-        <div style="background:linear-gradient(135deg,#c8d4f2,#a0b0e8);border-radius:12px;aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:28px">💎</div>
+      <div class="portfolio-grid">
+        <div class="portfolio-cell" style="background:linear-gradient(135deg,#f2d4c8,#e8c0b0)">💅</div>
+        <div class="portfolio-cell" style="background:linear-gradient(135deg,#e8d5a3,#d4b87a)">✨</div>
+        <div class="portfolio-cell" style="background:linear-gradient(135deg,#d4e8d5,#a8c9ab)">🌸</div>
+        <div class="portfolio-cell" style="background:linear-gradient(135deg,#c8d4f2,#a0b0e8)">💎</div>
       </div>
-
-      <a class="portfolio-btn" href="https://ru.pinterest.com/crystalwithluv/_created/" target="_blank">
-        👀 Смотреть все работы
+      <a class="portfolio-btn" href="https://t.me/wexbeauty" target="_blank">
+        ✈️ <span data-i="port_btn">Открыть @wexbeauty</span>
       </a>
     </div>
   </div>
 
 </div>
-
-<!-- Toast -->
 <div class="toast" id="toast"></div>
 
 <script>
-// ============================================================
-// Telegram WebApp инициализация
-// ============================================================
 const tg = window.Telegram?.WebApp;
-if (tg) {
-  tg.ready();
-  tg.expand();
-  tg.MainButton.hide();
-}
+if (tg) { tg.ready(); tg.expand(); }
 
-// ============================================================
-// Состояние приложения
-// ============================================================
-const state = {
-  currentYear: new Date().getFullYear(),
-  currentMonth: new Date().getMonth(),
-  selectedDate: null,
-  selectedTime: null,
-  isSubscribed: false,
-  // Демо-данные доступных дней (в реальном боте берутся из API)
-  availableDates: generateAvailableDates(),
-  timeSlots: {
-    // Заполняется динамически
+// ── Переводы ──────────────────────────────────────────────
+const T = {
+  ru: {
+    subtitle:"Запись онлайн", nav_book:"Записаться", nav_prices:"Прайсы", nav_port:"Портфолио",
+    sub_title:"Требуется подписка", sub_text:"Для записи подпишитесь на канал",
+    sub_btn:"Подписаться", sub_check:"✓ Проверить подписку",
+    cal_hint:"✅ — доступные дни", choose_time:"Выберите время",
+    btn_continue:"Продолжить →", btn_back:"← Назад",
+    your_data:"Ваши данные", lbl_name:"Имя", lbl_phone:"Телефон",
+    check_data:"Проверьте данные",
+    c_date:"📅 Дата", c_time:"🕐 Время", c_name:"👤 Имя", c_phone:"📱 Телефон",
+    btn_confirm:"✓ Подтвердить запись", success_title:"Запись создана!",
+    btn_menu:"← Главное меню",
+    price_title:"Прайс-лист", price_sub:"Актуальные цены",
+    s1:"Французский маникюр", s1s:"Френч • гель-лак",
+    s2:"Квадрат", s2s:"Классическая форма",
+    price_note:"❀ По вопросам — пишите в бот",
+    port_title:"Мои работы", port_text:"Реальные работы в Telegram-канале @wexbeauty",
+    port_btn:"Открыть @wexbeauty",
+    no_slots:"Нет свободных мест",
+    err_name:"Введите имя (минимум 2 символа)",
+    err_phone:"Введите корректный номер",
+    sub_ok:"✅ Подписка подтверждена!",
+    success_body:"Мы ждём вас! ✨\nНапомним за 24 часа до визита.",
+    ph_name:"Ваше имя", ph_phone:"+7 999 123-45-67",
+    months:['Январь','Февраль','Март','Апрель','Май','Июнь','Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'],
+    days:['Пн','Вт','Ср','Чт','Пт','Сб','Вс'],
+    wd:['Вс','Пн','Вт','Ср','Чт','Пт','Сб'],
+  },
+  en: {
+    subtitle:"Book online", nav_book:"Book", nav_prices:"Prices", nav_port:"Portfolio",
+    sub_title:"Subscription required", sub_text:"Subscribe to the channel to book",
+    sub_btn:"Subscribe", sub_check:"✓ Check subscription",
+    cal_hint:"✅ — available days", choose_time:"Choose time",
+    btn_continue:"Continue →", btn_back:"← Back",
+    your_data:"Your details", lbl_name:"Name", lbl_phone:"Phone",
+    check_data:"Confirm details",
+    c_date:"📅 Date", c_time:"🕐 Time", c_name:"👤 Name", c_phone:"📱 Phone",
+    btn_confirm:"✓ Confirm booking", success_title:"Booking confirmed!",
+    btn_menu:"← Main menu",
+    price_title:"Price list", price_sub:"Current prices",
+    s1:"French manicure", s1s:"French • gel polish",
+    s2:"Square", s2s:"Classic shape",
+    price_note:"❀ Questions? Message the bot",
+    port_title:"Portfolio", port_text:"See our real work on Telegram @wexbeauty",
+    port_btn:"Open @wexbeauty",
+    no_slots:"No slots available",
+    err_name:"Enter your name (min 2 chars)",
+    err_phone:"Enter a valid phone number",
+    sub_ok:"✅ Subscription confirmed!",
+    success_body:"We look forward to seeing you! ✨\nReminder 24h before your visit.",
+    ph_name:"Your name", ph_phone:"+7 999 123-4567",
+    months:['January','February','March','April','May','June','July','August','September','October','November','December'],
+    days:['Mo','Tu','We','Th','Fr','Sa','Su'],
+    wd:['Su','Mo','Tu','We','Th','Fr','Sa'],
   }
 };
 
-function generateAvailableDates() {
-  const dates = {};
+let lang = 'ru';
+let dark = false;
+
+// ── Тема ──────────────────────────────────────────────────
+function toggleTheme() {
+  dark = !dark;
+  document.documentElement.setAttribute('data-theme', dark ? 'dark' : '');
+}
+if (tg && tg.colorScheme === 'dark') {
+  dark = true;
+  document.documentElement.setAttribute('data-theme', 'dark');
+}
+
+// ── Язык ──────────────────────────────────────────────────
+function setLang(l) {
+  lang = l;
+  document.querySelectorAll('.lang-btn').forEach(b =>
+    b.classList.toggle('active', b.textContent === l.toUpperCase())
+  );
+  applyT();
+  renderCal();
+}
+
+function applyT() {
+  const t = T[lang];
+  document.querySelectorAll('[data-i]').forEach(el => {
+    const k = el.dataset.i;
+    if (t[k] != null) el.textContent = t[k];
+  });
+  document.getElementById('inp-name').placeholder = t.ph_name;
+  document.getElementById('inp-phone').placeholder = t.ph_phone;
+}
+
+// ── Навигация ──────────────────────────────────────────────
+function switchTab(tab, btn) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('section-' + tab).classList.add('active');
+  btn.classList.add('active');
+}
+
+// ── Состояние ──────────────────────────────────────────────
+const S = {
+  year: new Date().getFullYear(),
+  month: new Date().getMonth(),
+  date: null,
+  time: null,
+  available: makeDates(),
+};
+
+function makeDates() {
+  const out = {};
   const today = new Date();
+  const slots = ['09:00','10:00','11:00','12:00','13:00','14:00','15:00','16:00','17:00','18:00'];
   for (let i = 1; i <= 30; i++) {
     const d = new Date(today);
     d.setDate(today.getDate() + i);
-    if (d.getDay() !== 0) { // Не воскресенье
-      const key = d.toISOString().split('T')[0];
-      dates[key] = ['10:00','11:00','12:00','14:00','15:00','16:00','17:00','18:00'].filter(() => Math.random() > 0.3);
+    if (d.getDay() !== 0) {
+      const k = d.toISOString().split('T')[0];
+      out[k] = slots.filter(() => Math.random() > 0.3);
     }
   }
-  return dates;
+  return out;
 }
 
-// ============================================================
-// Навигация по вкладкам
-// ============================================================
-function switchTab(tab) {
-  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById(`section-${tab}`).classList.add('active');
-  event.target.classList.add('active');
-}
-
-// ============================================================
-// Рендер календаря
-// ============================================================
-const monthNames = ['Январь','Февраль','Март','Апрель','Май','Июнь',
-  'Июль','Август','Сентябрь','Октябрь','Ноябрь','Декабрь'];
-const dayNames = ['Пн','Вт','Ср','Чт','Пт','Сб','Вс'];
-
-function renderCalendar() {
-  const { currentYear: year, currentMonth: month } = state;
-  document.getElementById('cal-title').textContent = `${monthNames[month]} ${year}`;
-
+// ── Календарь ──────────────────────────────────────────────
+function renderCal() {
+  const t = T[lang];
+  document.getElementById('cal-title').textContent = `${t.months[S.month]} ${S.year}`;
   const grid = document.getElementById('calendar');
   grid.innerHTML = '';
 
-  // Заголовки дней
-  dayNames.forEach(d => {
+  t.days.forEach(d => {
     const el = document.createElement('div');
     el.className = 'cal-day-name';
     el.textContent = d;
     grid.appendChild(el);
   });
 
-  const firstDay = new Date(year, month, 1).getDay();
-  const daysInMonth = new Date(year, month + 1, 0).getDate();
-  const offset = firstDay === 0 ? 6 : firstDay - 1;
-  const today = new Date();
-  today.setHours(0,0,0,0);
+  const first = new Date(S.year, S.month, 1).getDay();
+  const dim = new Date(S.year, S.month + 1, 0).getDate();
+  const offset = first === 0 ? 6 : first - 1;
+  const today = new Date(); today.setHours(0,0,0,0);
 
   for (let i = 0; i < offset; i++) {
-    const el = document.createElement('div');
-    el.className = 'cal-day empty';
-    grid.appendChild(el);
+    const el = document.createElement('div'); el.className = 'cal-day empty'; grid.appendChild(el);
   }
-
-  for (let d = 1; d <= daysInMonth; d++) {
-    const el = document.createElement('div');
-    el.className = 'cal-day';
+  for (let d = 1; d <= dim; d++) {
+    const el = document.createElement('div'); el.className = 'cal-day';
     el.textContent = d;
-
-    const dayDate = new Date(year, month, d);
-    const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-
+    const dayDate = new Date(S.year, S.month, d);
+    const ds = `${S.year}-${String(S.month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
     if (dayDate < today) {
       el.classList.add('past');
-    } else if (dayDate.getTime() === today.getTime()) {
-      el.classList.add('today');
-    }
-
-    if (state.availableDates[dateStr] && state.availableDates[dateStr].length > 0) {
+    } else if (S.available[ds]?.length > 0) {
       el.classList.add('available');
-      if (state.selectedDate === dateStr) el.classList.add('selected');
-      el.onclick = () => selectDate(dateStr, el);
-    } else if (dayDate >= today) {
+      if (S.date === ds) el.classList.add('selected');
+      el.onclick = () => pickDate(ds, el);
+    } else {
       el.classList.add('unavailable');
     }
-
     grid.appendChild(el);
   }
 }
 
 function prevMonth() {
-  state.currentMonth--;
-  if (state.currentMonth < 0) { state.currentMonth = 11; state.currentYear--; }
-  const today = new Date();
-  if (state.currentYear < today.getFullYear() ||
-    (state.currentYear === today.getFullYear() && state.currentMonth < today.getMonth())) {
-    state.currentMonth++;
-    if (state.currentMonth > 11) { state.currentMonth = 0; state.currentYear++; }
-    showToast('Нельзя вернуться в прошлое 🕐');
-    return;
-  }
-  renderCalendar();
+  const now = new Date();
+  if (S.year === now.getFullYear() && S.month <= now.getMonth()) return;
+  S.month--; if (S.month < 0) { S.month = 11; S.year--; }
+  renderCal();
 }
-
 function nextMonth() {
-  state.currentMonth++;
-  if (state.currentMonth > 11) { state.currentMonth = 0; state.currentYear++; }
-  renderCalendar();
+  S.month++; if (S.month > 11) { S.month = 0; S.year++; }
+  renderCal();
 }
 
-function selectDate(dateStr, el) {
-  state.selectedDate = dateStr;
+function pickDate(ds, el) {
+  S.date = ds; S.time = null;
   document.querySelectorAll('.cal-day.available').forEach(d => d.classList.remove('selected'));
   el.classList.add('selected');
-
-  setTimeout(() => showTimeStep(dateStr), 200);
+  setTimeout(() => showTimeStep(ds), 180);
 }
 
-// ============================================================
-// Шаги записи
-// ============================================================
-function showTimeStep(dateStr) {
-  document.getElementById('step-date').style.display = 'none';
-  document.getElementById('step-time').style.display = 'block';
+// ── Шаг 2: Время ──────────────────────────────────────────
+function showTimeStep(ds) {
+  show('step-time'); hide('step-date');
+  const t = T[lang];
+  const [y,m,d] = ds.split('-');
+  const dt = new Date(+y, +m-1, +d);
+  document.getElementById('date-label').textContent =
+    `${t.wd[dt.getDay()]}, ${d} ${t.months[+m-1]}`;
 
-  const [y, m, d] = dateStr.split('-');
-  const dt = new Date(y, m-1, d);
-  const weekdays = ['Вс','Пн','Вт','Ср','Чт','Пт','Сб'];
-  document.getElementById('selected-date-label').textContent =
-    `${weekdays[dt.getDay()]}, ${d} ${monthNames[m-1].toLowerCase()}`;
-
-  const slots = state.availableDates[dateStr] || [];
   const grid = document.getElementById('slots-grid');
   grid.innerHTML = '';
-  state.selectedTime = null;
-  document.getElementById('btn-to-form').disabled = true;
+  S.time = null;
+  document.getElementById('btn-form').disabled = true;
 
-  if (slots.length === 0) {
-    grid.innerHTML = '<div style="grid-column:span 3;text-align:center;color:var(--mauve);padding:20px;font-size:13px">Нет свободных мест</div>';
+  const slots = S.available[ds] || [];
+  if (!slots.length) {
+    const msg = document.createElement('div');
+    msg.style.cssText = 'grid-column:span 3;text-align:center;color:var(--sub-text);padding:18px;font-size:13px';
+    msg.textContent = t.no_slots;
+    grid.appendChild(msg);
     return;
   }
-
-  slots.forEach(time => {
+  slots.forEach(tm => {
     const btn = document.createElement('button');
     btn.className = 'slot-btn';
-    btn.textContent = time;
-    btn.onclick = () => selectTime(time, btn);
+    btn.textContent = tm;
+    btn.onclick = () => {
+      S.time = tm;
+      document.querySelectorAll('.slot-btn').forEach(b => b.classList.remove('selected'));
+      btn.classList.add('selected');
+      document.getElementById('btn-form').disabled = false;
+    };
     grid.appendChild(btn);
   });
 }
 
-function selectTime(time, btn) {
-  state.selectedTime = time;
-  document.querySelectorAll('.slot-btn').forEach(b => b.classList.remove('selected'));
-  btn.classList.add('selected');
-  document.getElementById('btn-to-form').disabled = false;
-}
-
 function goToForm() {
-  if (!state.selectedTime) return;
-  document.getElementById('step-time').style.display = 'none';
-  document.getElementById('step-form').style.display = 'block';
+  if (!S.time) return;
+  hide('step-time'); show('step-form');
 }
 
+// ── Шаг 3: Данные ─────────────────────────────────────────
 function goToConfirm() {
-  const name = document.getElementById('input-name').value.trim();
-  const phone = document.getElementById('input-phone').value.trim();
+  const t = T[lang];
+  const name = document.getElementById('inp-name').value.trim();
+  const phone = document.getElementById('inp-phone').value.trim();
+  if (name.length < 2) { toast(t.err_name); return; }
+  if (!phone.match(/^[\+]?[\d\s\-\(\)]{10,16}$/)) { toast(t.err_phone); return; }
 
-  if (name.length < 2) { showToast('Введите имя (минимум 2 символа)'); return; }
-  if (!phone.match(/^[\+]?[78]?\d{10}$/)) {
-    showToast('Введите корректный номер телефона');
-    return;
-  }
+  const [y,m,d] = S.date.split('-');
+  const dt = new Date(+y, +m-1, +d);
+  document.getElementById('c-date').textContent = `${t.wd[dt.getDay()]}, ${d} ${t.months[+m-1]} ${y}`;
+  document.getElementById('c-time').textContent = S.time;
+  document.getElementById('c-name').textContent = name;
+  document.getElementById('c-phone').textContent = phone;
 
-  const [y, m, d] = state.selectedDate.split('-');
-  const dt = new Date(y, m-1, d);
-  const weekdays = ['Вс','Пн','Вт','Ср','Чт','Пт','Сб'];
-  const dateFormatted = `${weekdays[dt.getDay()]}, ${d} ${monthNames[m-1]} ${y}`;
-
-  document.getElementById('conf-date').textContent = dateFormatted;
-  document.getElementById('conf-time').textContent = state.selectedTime;
-  document.getElementById('conf-name').textContent = name;
-  document.getElementById('conf-phone').textContent = phone;
-
-  document.getElementById('step-form').style.display = 'none';
-  document.getElementById('step-confirm').style.display = 'block';
+  hide('step-form'); show('step-confirm');
 }
 
+// ── Шаг 4: Подтверждение ──────────────────────────────────
 function submitBooking() {
-  const name = document.getElementById('input-name').value.trim();
-  const phone = document.getElementById('input-phone').value.trim();
+  const t = T[lang];
+  const name = document.getElementById('inp-name').value.trim();
+  const phone = document.getElementById('inp-phone').value.trim();
+  if (tg) tg.sendData(JSON.stringify({ action:'book', date:S.date, time:S.time, name, phone }));
 
-  // Отправляем данные в Telegram бот
-  if (tg) {
-    tg.sendData(JSON.stringify({
-      action: 'book',
-      date: state.selectedDate,
-      time: state.selectedTime,
-      name: name,
-      phone: phone
-    }));
-  }
-
-  // Показываем успех
-  document.getElementById('step-confirm').style.display = 'none';
-  document.getElementById('step-success').style.display = 'block';
-
-  const [y, m, d] = state.selectedDate.split('-');
+  hide('step-confirm'); show('step-success');
+  const [,m,d] = S.date.split('-');
   document.getElementById('success-text').innerHTML =
-    `📅 <strong>${d} ${monthNames[m-1]}</strong> в <strong>${state.selectedTime}</strong><br><br>` +
-    `Мы с нетерпением ждём вас! ✨<br>` +
-    `За 24 часа пришлём напоминание.`;
-
-  // Анимация лепестков
-  for (let i = 0; i < 12; i++) {
-    setTimeout(() => spawnPetal(), i * 150);
-  }
+    `📅 <strong>${d} ${T[lang].months[+m-1]}</strong> в <strong>${S.time}</strong><br><br>${t.success_body}`;
+  for (let i = 0; i < 14; i++) setTimeout(petal, i * 110);
 }
 
-function spawnPetal() {
-  const petals = ['🌸','🌺','💮','🌼','✿'];
+function petal() {
+  const emojis = ['🌸','🌺','💮','🌼'];
   const el = document.createElement('div');
   el.className = 'petal';
-  el.textContent = petals[Math.floor(Math.random() * petals.length)];
+  el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
   el.style.left = Math.random() * 100 + 'vw';
   el.style.animationDuration = (2 + Math.random() * 2) + 's';
-  el.style.fontSize = (16 + Math.random() * 16) + 'px';
+  el.style.fontSize = (14 + Math.random() * 12) + 'px';
   document.body.appendChild(el);
   setTimeout(() => el.remove(), 4000);
 }
 
-function resetBooking() {
-  state.selectedDate = null;
-  state.selectedTime = null;
-  document.getElementById('step-success').style.display = 'none';
-  document.getElementById('step-date').style.display = 'block';
-  document.getElementById('input-name').value = '';
-  document.getElementById('input-phone').value = '';
-  renderCalendar();
+function reset() {
+  S.date = null; S.time = null;
+  hide('step-success'); show('step-date');
+  document.getElementById('inp-name').value = '';
+  document.getElementById('inp-phone').value = '';
+  renderCal();
 }
 
 function goBack(showId, hideId) {
-  document.getElementById(hideId).style.display = 'none';
-  document.getElementById(showId).style.display = 'block';
-  if (showId === 'step-date') renderCalendar();
+  hide(hideId); show(showId);
+  if (showId === 'step-date') renderCal();
 }
 
-// ============================================================
-// Проверка подписки
-// ============================================================
-function checkSubscription() {
-  // В реальном приложении это делается через бот
-  if (tg) {
-    tg.sendData(JSON.stringify({ action: 'check_subscription' }));
-  }
-  // Для демо — просто открываем доступ
-  state.isSubscribed = true;
-  document.getElementById('sub-check').style.display = 'none';
-  document.getElementById('step-date').style.display = 'block';
-  showToast('✅ Подписка подтверждена!');
+function checkSub() {
+  if (tg) tg.sendData(JSON.stringify({ action: 'check_subscription' }));
+  hide('sub-check'); show('step-date');
+  toast(T[lang].sub_ok);
 }
 
-// ============================================================
-// Toast уведомления
-// ============================================================
-function showToast(msg) {
-  const toast = document.getElementById('toast');
-  toast.textContent = msg;
-  toast.classList.add('show');
-  setTimeout(() => toast.classList.remove('show'), 2800);
+function show(id) { document.getElementById(id).style.display = 'block'; }
+function hide(id) { document.getElementById(id).style.display = 'none'; }
+function toast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg; el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 2600);
 }
 
-// ============================================================
-// Инициализация
-// ============================================================
-renderCalendar();
-
-// Применяем цвета Telegram если доступно
-if (tg) {
-  const tgColor = tg.themeParams;
-  if (tgColor?.bg_color) {
-    // Используем кастомную тему
-  }
-}
+// ── Инициализация ─────────────────────────────────────────
+applyT();
+renderCal();
 </script>
 </body>
 </html>
